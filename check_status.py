@@ -82,7 +82,7 @@ def main():
         help="key to check in the service response"
     )
     optional.add_argument(
-        "-v", "--value", type=str, dest="key", default="running",
+        "-v", "--value", type=str, dest="value", default="running",
         help="value of the key necessary for the probe to return OK status"
     )
     optional.add_argument(

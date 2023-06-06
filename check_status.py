@@ -1,6 +1,7 @@
 #!/usr/bin/python3
 import argparse
 import sys
+
 import requests
 
 
@@ -36,16 +37,17 @@ class ProbeResponse:
 def check_status(args):
     probe = ProbeResponse()
     try:
-        response = requests.get("%s/status" % args.url, timeout=args.timeout)
+        response = requests.get(args.url, timeout=args.timeout)
+
         response.raise_for_status()
 
-        status = response.json()["state"]
+        status = response.json()[args.key]
 
-        if status == "RUNNING":
+        if status.lower() == args.value:
             probe.write_ok("Service available")
 
         else:
-            probe.write_warning("Service not available: %s" % status)
+            probe.write_warning(f"Service not available: {status}")
 
     except (
         requests.exceptions.HTTPError,
@@ -74,6 +76,14 @@ def main():
     )
     required.add_argument(
         "-u", "--url", type=str, dest="url", help="service url", required=True
+    )
+    optional.add_argument(
+        "-k", "--key", type=str, dest="key", default="state",
+        help="key to check in the service response"
+    )
+    optional.add_argument(
+        "-v", "--value", type=str, dest="key", default="running",
+        help="value of the key necessary for the probe to return OK status"
     )
     optional.add_argument(
         "-h", "--help", action="help", default=argparse.SUPPRESS,

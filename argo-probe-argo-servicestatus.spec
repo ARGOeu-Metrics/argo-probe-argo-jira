@@ -8,7 +8,9 @@ Source:		%{name}-%{version}.tar.gz
 BuildArch:	noarch
 BuildRoot:	%{_tmppath}/%{name}-%{version}
 AutoReqProv:    no
-Requires:       python-requests
+
+BuildRequires: python3-devel
+Requires: python36-requests
 
 %description
 Generic ARGO probe to check service availabilty

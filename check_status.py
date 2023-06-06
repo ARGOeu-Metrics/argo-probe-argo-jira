@@ -1,4 +1,4 @@
-#!/usr/bin/env python
+#!/usr/bin/python3
 import argparse
 import sys
 import requests
@@ -13,23 +13,23 @@ class ProbeResponse:
     def __init__(self):
         self.status_code = self.OK
 
-    def writeOK(self, msg):
-        print "OK - %s" % msg
+    def write_ok(self, msg):
+        print(f"OK - {msg}")
         self.status_code = self.OK
 
-    def writeWARNING(self, msg):
-        print "WARNING - %s" % msg
+    def write_warning(self, msg):
+        print(f"WARNING - {msg}")
         self.status_code = self.WARNING
 
-    def writeCRITICAL(self, msg):
-        print "CRITICAL - %s" % msg
+    def write_critical(self, msg):
+        print(f"CRITICAL - {msg}")
         self.status_code = self.CRITICAL
 
-    def writeUNKNOWN(self, msg):
-        print "UNKNOWN - %s" % msg
+    def write_unknown(self, msg):
+        print(f"UNKNOWN - {msg}")
         self.status_code = self.UNKNOWN
 
-    def getStatusCode(self):
+    def get_statuscode(self):
         return self.status_code
 
 
@@ -42,10 +42,10 @@ def check_status(args):
         status = response.json()["state"]
 
         if status == "RUNNING":
-            probe.writeOK("Service available")
+            probe.write_ok("Service available")
 
         else:
-            probe.writeWARNING("Service not available: %s" % status)
+            probe.write_warning("Service not available: %s" % status)
 
     except (
         requests.exceptions.HTTPError,
@@ -54,12 +54,12 @@ def check_status(args):
         ValueError,
         KeyError
     ) as err:
-        probe.writeCRITICAL(str(err))
+        probe.write_critical(str(err))
 
     except Exception as err:
-        probe.writeUNKNOWN(str(err))
+        probe.write_unknown(str(err))
 
-    sys.exit(probe.getStatusCode())
+    sys.exit(probe.get_statuscode())
 
 
 def main():

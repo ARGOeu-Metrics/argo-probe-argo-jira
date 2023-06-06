@@ -1,6 +1,7 @@
-#!/usr/bin/env python
+#!/usr/bin/python3
 import argparse
 import sys
+
 import requests
 
 
@@ -13,39 +14,40 @@ class ProbeResponse:
     def __init__(self):
         self.status_code = self.OK
 
-    def writeOK(self, msg):
-        print "OK - %s" % msg
+    def write_ok(self, msg):
+        print(f"OK - {msg}")
         self.status_code = self.OK
 
-    def writeWARNING(self, msg):
-        print "WARNING - %s" % msg
+    def write_warning(self, msg):
+        print(f"WARNING - {msg}")
         self.status_code = self.WARNING
 
-    def writeCRITICAL(self, msg):
-        print "CRITICAL - %s" % msg
+    def write_critical(self, msg):
+        print(f"CRITICAL - {msg}")
         self.status_code = self.CRITICAL
 
-    def writeUNKNOWN(self, msg):
-        print "UNKNOWN - %s" % msg
+    def write_unknown(self, msg):
+        print(f"UNKNOWN - {msg}")
         self.status_code = self.UNKNOWN
 
-    def getStatusCode(self):
+    def get_statuscode(self):
         return self.status_code
 
 
 def check_status(args):
     probe = ProbeResponse()
     try:
-        response = requests.get("%s/status" % args.url, timeout=args.timeout)
+        response = requests.get(args.url, timeout=args.timeout)
+
         response.raise_for_status()
 
-        status = response.json()["state"]
+        status = response.json()[args.key]
 
-        if status == "RUNNING":
-            probe.writeOK("Service available")
+        if status.lower() == args.value:
+            probe.write_ok("Service available")
 
         else:
-            probe.writeWARNING("Service not available: %s" % status)
+            probe.write_warning(f"Service not available: {status}")
 
     except (
         requests.exceptions.HTTPError,
@@ -54,12 +56,12 @@ def check_status(args):
         ValueError,
         KeyError
     ) as err:
-        probe.writeCRITICAL(str(err))
+        probe.write_critical(str(err))
 
     except Exception as err:
-        probe.writeUNKNOWN(str(err))
+        probe.write_unknown(str(err))
 
-    sys.exit(probe.getStatusCode())
+    sys.exit(probe.get_statuscode())
 
 
 def main():
@@ -74,6 +76,14 @@ def main():
     )
     required.add_argument(
         "-u", "--url", type=str, dest="url", help="service url", required=True
+    )
+    optional.add_argument(
+        "-k", "--key", type=str, dest="key", default="state",
+        help="key to check in the service response"
+    )
+    optional.add_argument(
+        "-v", "--value", type=str, dest="key", default="running",
+        help="value of the key necessary for the probe to return OK status"
     )
     optional.add_argument(
         "-h", "--help", action="help", default=argparse.SUPPRESS,

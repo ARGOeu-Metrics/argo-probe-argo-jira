@@ -1,3 +1,5 @@
+%global __python %{python3}
+
 Name:		argo-probe-argo-servicestatus
 Version:	0.1.1
 Release:	1%{?dist}

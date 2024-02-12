@@ -1,5 +1,6 @@
 #!/usr/bin/python3
 import argparse
+import json
 import sys
 
 import requests
@@ -36,18 +37,29 @@ class ProbeResponse:
 
 def check_status(args):
     probe = ProbeResponse()
+    perf_data = ""
     try:
         response = requests.get(args.url, timeout=args.timeout)
 
-        response.raise_for_status()
+        response_time = response.elapsed.total_seconds()
+        response_size = len(response.content)
+
+        perf_data = f"|time={response_time}s;size={response_size}B"
 
         status = response.json()[args.key]
 
+        response.raise_for_status()
+
         if status.lower() == args.value:
-            probe.write_ok("Service available")
+            probe.write_ok(f"Service available{perf_data}")
 
         else:
-            probe.write_warning(f"Service not available: {status}")
+            probe.write_critical(f"Service not available: {status}{perf_data}")
+
+    except json.decoder.JSONDecodeError as err:
+        probe.write_critical(
+            f"Error decoding JSON: {str(err)}{perf_data}"
+        )
 
     except (
         requests.exceptions.HTTPError,
@@ -56,7 +68,11 @@ def check_status(args):
         ValueError,
         KeyError
     ) as err:
-        probe.write_critical(str(err))
+        msg = str(err)
+        if perf_data:
+            msg = f"{msg}{perf_data}"
+
+        probe.write_critical(msg)
 
     except Exception as err:
         probe.write_unknown(str(err))

@@ -32,5 +32,5 @@ Example execution of `check_status.py`
 ```
 # /usr/libexec/argo/probes/argo-servicestatus/check_status.py -t 30 -u https://wiki.eoscfuture.eu/status
 
-OK - Service available
+OK - Service available|time=0.076267s;size=19B
 ```

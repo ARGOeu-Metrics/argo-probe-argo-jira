@@ -1,7 +1,7 @@
 %global __python %{python3}
 
 Name:		argo-probe-argo-servicestatus
-Version:	0.2.0
+Version:	0.3.0
 Release:	1%{?dist}
 Summary:	Monitoring scripts that check service status
 License:	GPLv3+
@@ -34,6 +34,8 @@ install -m 755 check_status.py %{buildroot}/%{_libexecdir}/argo/probes/argo-serv
 %attr(0755,root,root) /%{_libexecdir}/argo/probes/argo-servicestatus/check_status.py
 
 %changelog
+* Thu Mar 7 2024 Katarina Zailac <kzailac@srce.hr> - 0.3.0-1
+- ARGO-4476 Add performance data to argo-probe-argo-servicestatus
 * Thu Jul 6 2023 Katarina Zailac <kzailac@srce.hr> - 0.2.0-1
 - ARGO-4329 Fix an error in probe
 - ARGO-4320 Generalize argo-probe-argo-servicestatus probe

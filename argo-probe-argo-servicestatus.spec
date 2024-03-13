@@ -12,7 +12,15 @@ BuildRoot:	%{_tmppath}/%{name}-%{version}
 AutoReqProv:    no
 
 BuildRequires: python3-devel
-Requires: python36-requests
+
+%if 0%{?el7}
+Requires:      python36-requests
+
+%else
+Requires:      python3-requests
+
+%endif
+
 
 %description
 Generic ARGO probe to check service availabilty

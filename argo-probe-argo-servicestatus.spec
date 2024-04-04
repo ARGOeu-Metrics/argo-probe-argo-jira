@@ -1,7 +1,7 @@
 %global __python %{python3}
 
 Name:		argo-probe-argo-servicestatus
-Version:	0.3.0
+Version:	0.3.1
 Release:	1%{?dist}
 Summary:	Monitoring scripts that check service status
 License:	GPLv3+
@@ -12,7 +12,15 @@ BuildRoot:	%{_tmppath}/%{name}-%{version}
 AutoReqProv:    no
 
 BuildRequires: python3-devel
-Requires: python36-requests
+
+%if 0%{?el7}
+Requires:      python36-requests
+
+%else
+Requires:      python3-requests
+
+%endif
+
 
 %description
 Generic ARGO probe to check service availabilty
@@ -34,6 +42,8 @@ install -m 755 check_status.py %{buildroot}/%{_libexecdir}/argo/probes/argo-serv
 %attr(0755,root,root) /%{_libexecdir}/argo/probes/argo-servicestatus/check_status.py
 
 %changelog
+* Thu Apr 4 2024 Katarina Zailac <kzailac@srce.hr> - 0.3.1-1
+- AO-931 Create Rocky 9 RPM for argo-probe-argo-servicestatus
 * Thu Mar 7 2024 Katarina Zailac <kzailac@srce.hr> - 0.3.0-1
 - ARGO-4476 Add performance data to argo-probe-argo-servicestatus
 * Thu Jul 6 2023 Katarina Zailac <kzailac@srce.hr> - 0.2.0-1

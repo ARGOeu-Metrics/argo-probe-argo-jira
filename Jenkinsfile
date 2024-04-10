@@ -1,5 +1,5 @@
 pipeline {
-    agent any
+    agent none
     options {
         checkoutToSubdirectory('argo-probe-argo-servicestatus')
     }
